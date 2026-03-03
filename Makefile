@@ -1,12 +1,13 @@
 CC = gcc
-CFLAGS = -I include -Wall -Wextra -Wpedantic -g
+CFLAGS = -Wall -Wextra -Wpedantic -g
+CLIBS = -lSDL2
+CSRCS := $(wildcard src/*.c)
 TARGET = alpha_tac
 BUILD_DIR = build
-C_SRCS := $(wildcard src/*.c)
 
 $(BUILD_DIR)/$(TARGET): $(C_SRCS)
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) -o $@ $(C_SRCS)
+	$(CC) $(CFLAGS) -o $@ $(CSRCS) $(CLIBS)
 
 clean:
 	rm -r $(BUILD_DIR)
