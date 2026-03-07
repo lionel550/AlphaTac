@@ -6,6 +6,7 @@
 
 static const uint8_t red[] = {255, 0, 0};
 static const uint8_t blue[] = {0, 0, 255};
+static const uint8_t black[] = {0, 0, 0};
 
 static void draw_circle(SDL_Renderer *renderer, int x, int y, const uint8_t *color)
 {
@@ -69,9 +70,9 @@ static void clear_window(SDL_Renderer *renderer)
     SDL_RenderClear(renderer);
 }
 
-static void draw_grid(SDL_Renderer *renderer)
+static void draw_grid(SDL_Renderer *renderer, const uint8_t *color)
 {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(renderer, color[0], color[1], color[2], SDL_ALPHA_OPAQUE);
 
     SDL_RenderDrawLine(renderer, CELL_WIDTH, 0, CELL_WIDTH, SCREEN_HEIGHT);
     SDL_RenderDrawLine(renderer, CELL_WIDTH * 2, 0, CELL_WIDTH * 2, SCREEN_HEIGHT);
@@ -92,18 +93,40 @@ void process_game_event(GameState *state, int *should_quit)
         }
         else if (event.type == SDL_MOUSEBUTTONDOWN)
         {
-            int x = event.button.x / CELL_WIDTH;
-            int y = event.button.y / CELL_HEIGHT;
+            if (state->has_winner || no_possible_winner(state))
+            {
+                reset_game(state);
+            }
+            else
+            {
+                int x = event.button.x / CELL_WIDTH;
+                int y = event.button.y / CELL_HEIGHT;
 
-            update_board(x, y, state);
+                update_board(x, y, state);
+            }
+
         }
     }
 }
 
 void render_game_frame(SDL_Renderer *renderer, const GameState *state)
 {
+    const uint8_t *grid_color = NULL;
+
+    if (state->has_winner)
+    {
+        if (state->winner == PLAYER_X)
+            grid_color = blue;
+        else
+            grid_color = red;
+    }
+    else
+    {
+        grid_color = black;
+    }
+
     clear_window(renderer);
-    draw_grid(renderer);
+    draw_grid(renderer, grid_color);
     fill_grid(renderer, state);
     SDL_RenderPresent(renderer);
 }

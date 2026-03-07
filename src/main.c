@@ -1,5 +1,6 @@
 // TODO: Error management
 // TODO: Remove all magic number
+// TODO:Fix build 
 
 #include "game.h"
 
@@ -16,6 +17,7 @@ int main()
     while (should_quit != 1)
     {
         process_game_event(&game_state, &should_quit);
+        check_for_victory(&game_state);
         render_game_frame(renderer, &game_state);
     }
 

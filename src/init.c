@@ -30,6 +30,11 @@ void init_game(SDL_Window **window, SDL_Renderer **renderer, GameState *state)
         exit(EXIT_FAILURE); 
     }
 
+    reset_game(state);
+}
+
+void reset_game(GameState *state)
+{
     state->player_turn = PLAYER_X;
 
     for (int y = 0; y < NBR_ROWS; y++)
@@ -39,6 +44,9 @@ void init_game(SDL_Window **window, SDL_Renderer **renderer, GameState *state)
             state->grid[y][x] = EMPTY_CELL;
         }
     }
+
+    state->has_winner = false;
+    state->winner = 0;
 }
 
 void game_quit(SDL_Window *window, SDL_Renderer *renderer)
